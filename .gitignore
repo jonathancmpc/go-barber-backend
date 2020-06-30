@@ -45,6 +45,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
+node_modules
 
 # TypeScript v1 declaration files
 typings/
@@ -118,6 +119,7 @@ dist
 !.vscode/launch.json
 !.vscode/extensions.json
 *.code-workspace
+.vscode
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
