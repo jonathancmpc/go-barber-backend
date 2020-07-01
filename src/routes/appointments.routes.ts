@@ -5,7 +5,12 @@ import { parseISO } from 'date-fns';
 import AppointmentsRepository from '../repositories/AppointmentsRepository';
 import CreateAppointmentService from '../services/CreateAppointmentService';
 
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
+
 const appointmentsRouter = Router();
+
+// Aplicando o Middleware de autenticação em todas as rotas de agendamentos
+appointmentsRouter.use(ensureAuthenticated);
 
 /* A Rota deve estar preocupada apenas com: receber a requisição, chamar outro arquivo para tratar essa requisição e devolver a resposta para o cliente. */
 
