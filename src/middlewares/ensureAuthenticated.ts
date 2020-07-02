@@ -14,7 +14,6 @@ export default function ensureAuthenticated(
   next: NextFunction,
 ): void {
   // Validação do Token JWT
-
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
