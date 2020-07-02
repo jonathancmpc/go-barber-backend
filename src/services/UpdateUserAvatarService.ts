@@ -25,7 +25,6 @@ class UpdateUserAvatarService {
     if (user.avatar) {
       // fazendo o join entre dois caminhos
       const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-      console.log(userAvatarFilePath);
       // Verificando se existe o avatar, o stat do fileSystem retorna o status do path somente se ele existir, então com isso podemos verificar se ele existe ou não.
       const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
 
