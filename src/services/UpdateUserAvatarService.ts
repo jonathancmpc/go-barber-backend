@@ -2,6 +2,8 @@ import { getRepository } from 'typeorm';
 import path from 'path';
 import fs from 'fs'; // fileSystem do Node
 
+import AppError from '../errors/AppError';
+
 import User from '../models/User';
 import uploadConfig from '../config/upload';
 
@@ -18,7 +20,7 @@ class UpdateUserAvatarService {
     const user = await usersRepository.findOne(user_id);
 
     if (!user) {
-      throw new Error('Only authenticated users can change avatar.');
+      throw new AppError('Only authenticated users can change avatar.', 401);
     }
 
     // verifica se o usuário já tem um avatar para deletar o arquivo antigo
