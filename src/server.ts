@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import 'express-async-errors';
 import routes from './routes';
 import uploadConfig from './config/upload';
@@ -8,6 +9,8 @@ import './database';
 
 const app = express();
 
+// O CORS evita que algum site sem altorização acesse a API.
+app.use(cors());
 app.use(express.json());
 // colocando uma rota estática para consultarmos os arquivos que estão salvos em nossa aplicação
 app.use('/files', express.static(uploadConfig.directory));
