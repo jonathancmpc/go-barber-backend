@@ -2,7 +2,7 @@ import { startOfHour } from 'date-fns';
 
 import { getCustomRepository } from 'typeorm';
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
-import AppointmentsRepository from '@modules/appointments/repositories/AppointmentsRepository';
+import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 
 import AppError from '@shared/errors/AppError';
 
@@ -16,7 +16,7 @@ class CreateAppointmentService {
     provider_id,
     date,
   }: RequestDTO): Promise<Appointment> {
-    const appointmentsRepository = getCustomRepository(AppointmentsRepository);
+    const appointmentsRepository = getCustomRepository(IAppointmentsRepository);
 
     const appointmentDate = startOfHour(date);
 
@@ -31,12 +31,10 @@ class CreateAppointmentService {
     }
 
     /* Não é necessário ser assíncrono pq ele só cria, quem salva no banco é o save */
-    const appointment = appointmentsRepository.create({
+    const appointment = await appointmentsRepository.create({
       provider_id,
       date: appointmentDate,
     });
-
-    await appointmentsRepository.save(appointment);
 
     return appointment;
   }
