@@ -1,27 +1,30 @@
 import { startOfHour } from 'date-fns';
 
-import { getCustomRepository } from 'typeorm';
+import AppError from '@shared/errors/AppError';
+
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 
-import AppError from '@shared/errors/AppError';
-
-interface RequestDTO {
+interface IRequestDTO {
   provider_id: string;
   date: Date;
 }
 
 class CreateAppointmentService {
+  private appointmentsRepository: IAppointmentsRepository;
+
+  constructor(appointmentsRepository: IAppointmentsRepository) {
+    this.appointmentsRepository = appointmentsRepository;
+  }
+
   public async execute({
     provider_id,
     date,
-  }: RequestDTO): Promise<Appointment> {
-    const appointmentsRepository = getCustomRepository(IAppointmentsRepository);
-
+  }: IRequestDTO): Promise<Appointment> {
     const appointmentDate = startOfHour(date);
 
     /* Verifica se existe alguma data igual dentro do nosso banco de dados ficticio, se tiver, ele retorna essa data dentro da variável findAppointmentInSameDate, e se não encontrar nenhuma, retorna false */
-    const findAppointmentInSameDate = await appointmentsRepository.findByDate(
+    const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
       appointmentDate,
     );
 
@@ -31,7 +34,7 @@ class CreateAppointmentService {
     }
 
     /* Não é necessário ser assíncrono pq ele só cria, quem salva no banco é o save */
-    const appointment = await appointmentsRepository.create({
+    const appointment = await this.appointmentsRepository.create({
       provider_id,
       date: appointmentDate,
     });
