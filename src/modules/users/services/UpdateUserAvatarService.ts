@@ -1,23 +1,28 @@
-import { getRepository } from 'typeorm';
 import path from 'path';
 import fs from 'fs'; // fileSystem do Node
 
 import AppError from '@shared/errors/AppError';
 
 import User from '@modules/users/infra/typeorm/entities/User';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+
 import uploadConfig from '@config/upload';
 
-interface Request {
+interface iRequest {
   user_id: string;
   avatarFilename: string;
 }
 
 class UpdateUserAvatarService {
-  public async execute({ user_id, avatarFilename }: Request): Promise<User> {
-    const usersRepository = getRepository(User);
+  private usersRepository: IUsersRepository;
 
+  constructor(usersRepository: IUsersRepository) {
+    this.usersRepository = usersRepository;
+  }
+
+  public async execute({ user_id, avatarFilename }: iRequest): Promise<User> {
     // verificando se o id de usuário é válido
-    const user = await usersRepository.findOne(user_id);
+    const user = await this.usersRepository.findById(user_id);
 
     if (!user) {
       throw new AppError('Only authenticated users can change avatar.', 401);
@@ -38,7 +43,7 @@ class UpdateUserAvatarService {
     // Atualizando o usuário
     user.avatar = avatarFilename;
 
-    await usersRepository.save(user); // o método save -> se já existir o usuário ele atualiza, e se não existir ele cria.
+    await this.usersRepository.save(user); // o método save -> se já existir o usuário ele atualiza, e se não existir ele cria.
 
     return user;
   }

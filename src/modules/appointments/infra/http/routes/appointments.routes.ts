@@ -7,7 +7,6 @@ import CreateAppointmentService from '@modules/appointments/services/CreateAppoi
 import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAuthenticated';
 
 const appointmentsRouter = Router();
-const appointmentsRepository = new AppointmentsRepository();
 
 // Aplicando o Middleware de autenticação em todas as rotas de agendamentos
 appointmentsRouter.use(ensureAuthenticated);
@@ -26,6 +25,7 @@ appointmentsRouter.post('/', async (request, response) => {
 
   const parsedDate = parseISO(date);
 
+  const appointmentsRepository = new AppointmentsRepository();
   const createAppointmentService = new CreateAppointmentService(
     appointmentsRepository,
   );
