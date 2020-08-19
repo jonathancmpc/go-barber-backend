@@ -1,5 +1,6 @@
 import path from 'path';
 import fs from 'fs'; // fileSystem do Node
+import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
@@ -13,10 +14,14 @@ interface iRequest {
   avatarFilename: string;
 }
 
+@injectable()
 class UpdateUserAvatarService {
   private usersRepository: IUsersRepository;
 
-  constructor(usersRepository: IUsersRepository) {
+  constructor(
+    @inject('UsersRepository')
+    usersRepository: IUsersRepository,
+  ) {
     this.usersRepository = usersRepository;
   }
 
