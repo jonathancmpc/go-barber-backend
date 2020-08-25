@@ -3,14 +3,15 @@ import IAppointmentsRepository from '@modules/appointments/repositories/IAppoint
 import ICreateAppointmentDTO from '@modules/appointments/dtos/iCreateAppointmentDTO';
 
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
+import { isEqual } from 'date-fns';
 
 /* Agora AppointmentsRepository tem uma interface chamada IAppointmentsRepository, onde servirá como uma camada que irá chamar todos os métodos de AppointmentsRepository */
 class AppointmentsRepository implements IAppointmentsRepository {
   private appointments: Appointment[] = [];
 
   public async findByDate(date: Date): Promise<Appointment | undefined> {
-    const findAppointment = await this.appointments.find(
-      appointment => appointment.date === date,
+    const findAppointment = await this.appointments.find(appointment =>
+      isEqual(appointment.date, date),
     );
 
     return findAppointment;
