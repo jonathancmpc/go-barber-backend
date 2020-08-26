@@ -1,5 +1,3 @@
-import path from 'path';
-import fs from 'fs'; // fileSystem do Node
 import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
@@ -7,8 +5,6 @@ import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
-
-import uploadConfig from '@config/upload';
 
 interface iRequest {
   user_id: string;
