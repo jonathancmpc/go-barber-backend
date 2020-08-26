@@ -5,8 +5,8 @@ import crypto from 'crypto';
 const tmpFolder = path.resolve(__dirname, '..', '..', 'tmp');
 
 export default {
-  // Essa variável foi passada apenas para recuperarmos o caminho do diretório quando chamarmos a função
-  directory: tmpFolder,
+  tmpFolder,
+  uploadsFolder: path.resolve(tmpFolder, 'uploads'),
   // Por enquanto vamos salvar os uploads em nossa aplicação, dentro da pasta tmp na raiz do projeto
   storage: multer.diskStorage({
     destination: tmpFolder,

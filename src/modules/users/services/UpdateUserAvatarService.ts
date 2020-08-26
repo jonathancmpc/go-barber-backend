@@ -6,6 +6,7 @@ import AppError from '@shared/errors/AppError';
 
 import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
 import uploadConfig from '@config/upload';
 
@@ -16,11 +17,12 @@ interface iRequest {
 
 @injectable()
 class UpdateUserAvatarService {
-  private usersRepository: IUsersRepository;
-
   constructor(
     @inject('UsersRepository')
-    usersRepository: IUsersRepository,
+    private usersRepository: IUsersRepository,
+
+    @inject('StorageProvider')
+    private storageProvider: IStorageProvider,
   ) {
     this.usersRepository = usersRepository;
   }
@@ -35,20 +37,16 @@ class UpdateUserAvatarService {
 
     // verifica se o usuário já tem um avatar para deletar o arquivo antigo
     if (user.avatar) {
-      // fazendo o join entre dois caminhos
-      const userAvatarFilePath = path.join(uploadConfig.directory, user.avatar);
-      // Verificando se existe o avatar, o stat do fileSystem retorna o status do path somente se ele existir, então com isso podemos verificar se ele existe ou não.
-      const userAvatarFileExists = await fs.promises.stat(userAvatarFilePath);
-
-      if (userAvatarFileExists) {
-        await fs.promises.unlink(userAvatarFilePath);
-      }
+      await this.storageProvider.deleteFile(user.avatar);
     }
 
-    // Atualizando o usuário
-    user.avatar = avatarFilename;
+    // Salvando o arquivo em uploads, retirando de tmp
+    const filename = await this.storageProvider.saveFile(avatarFilename);
 
-    await this.usersRepository.save(user); // o método save -> se já existir o usuário ele atualiza, e se não existir ele cria.
+    // Atualizando o usuário
+    user.avatar = filename;
+
+    await this.usersRepository.save(user);
 
     return user;
   }
