@@ -1,10 +1,10 @@
-import { hash } from 'bcryptjs';
 import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import User from '@modules/users/infra/typeorm/entities/User';
+import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 interface iRequest {
   name: string;
@@ -14,11 +14,12 @@ interface iRequest {
 
 @injectable()
 class CreateUserService {
-  private usersRepository: IUsersRepository;
-
   constructor(
     @inject('UsersRepository')
-    usersRepository: IUsersRepository,
+    private usersRepository: IUsersRepository,
+
+    @inject('HashProvider')
+    private hashProvider: IHashProvider,
   ) {
     this.usersRepository = usersRepository;
   }
@@ -31,7 +32,7 @@ class CreateUserService {
     }
 
     // criptografando a senha com um salto de 8.
-    const hashedPassword = await hash(password, 8);
+    const hashedPassword = await this.hashProvider.generateHash(password);
 
     const user = await this.usersRepository.create({
       name,
