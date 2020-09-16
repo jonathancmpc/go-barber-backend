@@ -26,16 +26,18 @@ class CreateAppointmentService {
     provider_id,
     date,
   }: IRequestDTO): Promise<Appointment> {
+    /* Extraindo somente a hora */
     const appointmentDate = startOfHour(date);
 
-    /* Verifica se existe alguma data igual dentro do nosso banco de dados ficticio, se tiver, ele retorna essa data dentro da variável findAppointmentInSameDate, e se não encontrar nenhuma, retorna false */
+    /* Verifica se existe alguma data igual dentro do banco de dados, se tiver, ele retorna essa data dentro da variável findAppointmentInSameDate, e se não encontrar nenhuma, retorna false */
     const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
       appointmentDate,
     );
 
+    /* Se tiver uma data repetida, retorna erro */
     if (findAppointmentInSameDate) {
       throw new AppError('This appointment is already booked');
-      // O código de retorno de status foi migrado para rota.
+      // O código de retorno de status foi migrado para o server.
     }
 
     /* Não é necessário ser assíncrono pq ele só cria, quem salva no banco é o save */

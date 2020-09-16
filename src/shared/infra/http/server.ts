@@ -16,7 +16,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 // colocando uma rota estática para consultarmos os arquivos que estão salvos em nossa aplicação
-app.use('/files', express.static(uploadConfig.directory));
+app.use('/files', express.static(uploadConfig.uploadsFolder));
 app.use(routes);
 
 app.use(
